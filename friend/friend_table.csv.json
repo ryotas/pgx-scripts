@@ -1,0 +1,6 @@
+{
+ "uri": "friend_table.csv",
+ "format": "edge_list",
+ "node_id_type": "integer",
+ "separator": ","
+}

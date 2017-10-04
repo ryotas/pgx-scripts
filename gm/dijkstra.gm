@@ -1,0 +1,67 @@
+/*
+* Copyright (C) 2013 - 2017 Oracle and/or its affiliates. All rights reserved.
+*/
+
+procedure dijkstra(G:graph, Len:E_P<double>, root, dest: node;
+    Parent: N_P<node>, ParentEdge: N_P<edge>) : bool {
+
+  if(G.numNodes() == 0) return false;
+
+  N_P<bool> Reached;
+
+  // sequentially initialize, otherwise compiler flags this algorithm as
+  //parallel in nature
+  for (n: G.nodes) {
+    n.Parent = NIL;
+    n.ParentEdge = NIL;
+    n.Reached = false;
+  }
+
+  //-------------------------------
+  // look up the node
+  //-------------------------------
+  map<node, double> Reachable;
+  Reachable[root] = 0.0;            // Add root to reachable set
+
+  //-------------------------------
+  // look up the node
+  //-------------------------------
+  bool found = false;
+  bool failed = false;
+  while (!found && !failed)
+  {
+    if (Reachable.size() == 0) 
+    {
+      failed = true;
+    }
+    else {
+
+      node(G) next = Reachable.getMinKey();
+      if (next == dest)  {
+        found = true;
+      }
+      else {
+        next.Reached = true;
+        double dist = Reachable[next];
+        Reachable.remove(next);
+
+        for(v: next.nbrs)(!v.Reached) {
+          edge e = v.toEdge();
+          if (!Reachable.hasKey(v)) {
+            Reachable[v] = dist + e.Len;
+            v.Parent = next;
+            v.ParentEdge = e;
+          }
+          else if (Reachable[v] > dist + e.Len) {
+            Reachable[v] = dist + e.Len;
+            v.Parent = next;
+            v.ParentEdge = e;
+          }
+        }
+      }
+    }
+  }
+
+  // return false if not reachable
+  return !failed;
+}

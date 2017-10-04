@@ -1,0 +1,175 @@
+
+
+DROP TABLE friend_table;
+CREATE TABLE friend_table (
+  person NUMBER(7)
+, friend NUMBER(7)
+);
+
+BEGIN
+  FOR i IN 1..1000000 LOOP
+    FOR j IN 1..10 LOOP
+      INSERT INTO friend_table VALUES (i, i+j);
+    END LOOP;
+  END LOOP;
+END;
+/
+
+-- random version (testing)
+
+DECLARE
+  rand NUMBER(10);
+BEGIN
+  FOR i IN 1..1000000 LOOP
+    FOR j IN 1..10 LOOP
+      SELECT FLOOR(DBMS_RANDOM.VALUE(1, 1000001)) INTO rand FROM DUAL;
+      INSERT INTO friend_table VALUES (i, rand);
+    END LOOP;
+  END LOOP;
+END;
+/
+
+-- queries
+
+SET LINESIZE 200
+set autotrace on
+SET TIMING ON
+
+SELECT friend FROM friend_table WHERE person = 10000;
+
+SELECT friend FROM friend_table WHERE person IN (
+  SELECT friend FROM friend_table WHERE person = 10000
+) AND rownum <= 10;
+
+SELECT COUNT(friend) FROM friend_table WHERE person IN (
+  SELECT friend FROM friend_table WHERE person IN (
+    SELECT friend FROM friend_table WHERE person = 10000
+  )
+);
+
+SELECT COUNT(friend) FROM friend_table WHERE person IN (
+  SELECT friend FROM friend_table WHERE person IN (
+    SELECT friend FROM friend_table WHERE person IN (
+      SELECT friend FROM friend_table WHERE person = 10000
+    )
+  )
+);
+
+SELECT COUNT(friend) FROM friend_table WHERE person IN (
+  SELECT friend FROM friend_table WHERE person IN (
+    SELECT friend FROM friend_table WHERE person IN (
+      SELECT friend FROM friend_table WHERE person IN (
+        SELECT friend FROM friend_table WHERE person = 10000
+      )
+    )
+  )
+);
+
+SELECT COUNT(friend) FROM friend_table WHERE person IN (
+  SELECT friend FROM friend_table WHERE person IN (
+    SELECT friend FROM friend_table WHERE person IN (
+      SELECT friend FROM friend_table WHERE person IN (
+        SELECT friend FROM friend_table WHERE person IN (
+          SELECT friend FROM friend_table WHERE person = 10000
+        )
+      )
+    )
+  )
+); AND rownum <= 10;
+
+SELECT COUNT(*) FROM friend_table WHERE person IN (
+  SELECT friend FROM friend_table WHERE person IN (
+    SELECT friend FROM friend_table WHERE person IN (
+      SELECT friend FROM friend_table WHERE person IN (
+        SELECT friend FROM friend_table WHERE person IN (
+          SELECT friend FROM friend_table WHERE person IN (
+            SELECT friend FROM friend_table WHERE person IN (
+              SELECT friend FROM friend_table WHERE person = 10000
+            )
+          )
+        )
+      )
+    )
+  )
+) AND person > 1;
+
+SELECT COUNT(*) FROM friend_table WHERE person IN (
+  SELECT friend FROM friend_table WHERE person IN (
+    SELECT friend FROM friend_table WHERE person IN (
+      SELECT friend FROM friend_table WHERE person IN (
+        SELECT friend FROM friend_table WHERE person IN (
+          SELECT friend FROM friend_table WHERE person IN (
+            SELECT friend FROM friend_table WHERE person IN (
+            SELECT friend FROM friend_table WHERE person IN (
+              SELECT friend FROM friend_table WHERE person = 10000
+            )
+            )
+          )
+        )
+      )
+    )
+  )
+) AND person > 1;
+
+SELECT COUNT(*) FROM friend_table WHERE person IN (
+  SELECT friend FROM friend_table WHERE person IN (
+    SELECT friend FROM friend_table WHERE person IN (
+      SELECT friend FROM friend_table WHERE person IN (
+        SELECT friend FROM friend_table WHERE person IN (
+          SELECT friend FROM friend_table WHERE person IN (
+            SELECT friend FROM friend_table WHERE person IN (
+            SELECT friend FROM friend_table WHERE person IN (
+            SELECT friend FROM friend_table WHERE person IN (
+              SELECT friend FROM friend_table WHERE person = 10000
+            )
+            )
+            )
+          )
+        )
+      )
+    )
+  )
+) AND person > 1;
+
+
+-- with indices, the queries above again
+
+CREATE INDEX person_index ON friend_table(person);
+DROP INDEX person_index;
+
+ALTER TABLE friend_table STORAGE(BUFFER_POOL KEEP);
+
+
+-- Create CSV for PGX
+
+set echo off
+set serveroutput off
+set termout off
+set pagesize 0
+set trimspool on
+set colsep ','
+spool friend_table2.csv
+SELECT * FROM friend_table;
+spool off
+
+-- PGQL queries
+
+G = session.readGraphWithProperties("friend_table.csv.json")
+G.queryPgql(" SELECT x WHERE (x) ").getNumResults()
+G.queryPgql(" SELECT x, y WHERE (x)->(y) ").getNumResults()
+
+ 
+G.queryPgql(" SELECT y WHERE (x WITH id()=10000)->()->()->()->()->(y) LIMIT 100").print()
+
+G.queryPgql(" SELECT COUNT(y) WHERE (x WITH id()=10000)->()->()->()->()->()->()->(y) LIMIT 100").print()
+
+-- Show execution plans
+
+:loglevel oracle.pgx DEBUG
+
+G.queryPgql(" SELECT COUNT(y) WHERE (x WITH id()=10000)->()->()->()->()->(y) LIMIT 100").print()
+
+
+
+
+
