@@ -1,0 +1,14 @@
+1001,isroot,2,,1,
+1001,name,1,John Evans,,
+1001,type,1,customer,,
+
+9001,isroot,2,,1,
+9001,name,1,dammy,,
+9001,type,1,Prediction,,
+9002,name,1,ABC Travel (68%),,
+9002,type,1,Prediction,,
+9003,name,1,Peach Airways (75%),,
+9003,type,1,Prediction,,
+9004,name,1,Platinam (55%),,
+9004,type,1,Prediction,,
+

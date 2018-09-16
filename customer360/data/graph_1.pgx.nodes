@@ -1,0 +1,13 @@
+1001,isroot,2,,1,
+1001,name,1,John Evans,,
+1001,type,1,customer,,
+1002,name,1,Ken Ishida,,
+1002,type,1,customer,,
+1003,name,1,Mary Wilson,,
+1003,type,1,customer,,
+
+5001,isroot,2,,1,
+5001,name,1,Bangkok,,
+5001,type,1,location,,
+5002,name,1,Bangkok,,
+5002,type,1,location,,

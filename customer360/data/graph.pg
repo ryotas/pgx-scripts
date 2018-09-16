@@ -1,0 +1,49 @@
+# Nodes
+
+1001  :customer  name:"John Evans"  isroot:1
+1002  :customer  name:"Ken Ishida"
+1003  :customer  name:"Mary Wilson"
+
+2001  :transaction  name:tx_2001  isroot:1
+2002  :transaction  name:tx_2002
+2003  :transaction  name:tx_2003
+2004  :transaction  name:tx_2004
+
+3001  :merchant  name:dammy  isroot:1
+3002  :merchant  name:"Thai Airlines"
+3003  :merchant  name:"Hillton Jakarta"
+
+4001  :transaction  name:tx_4001
+4002  :transaction  name:tx_4002
+4003  :transaction  name:tx_4003
+
+5001  :location  name:dammy
+5002  :location  name:Bangkok
+
+6001  :weblog  name:dammy  isroot:1
+6002  :weblog  name:page02
+6003  :weblog  name:page10
+
+7001  :complain  name:dammy  isroot:1
+7002  :complain  name:"internet banking usability"
+
+8001  :prediction  name:dammy  isroot:1
+8002  :prediction  name:"ABC Travel"
+8003  :prediction  name:"Peach Airways"
+
+# Edges
+
+1001  2002  :issued
+1001  2003  :issued
+2002  3002  :issued_to
+2003  3003  :issued_to
+
+1001  5002  :live_in
+1003  5002  :live_in
+
+1001  4002  :issued
+1001  4003  :issued
+4002  1003  :issued_to
+4003  3002  :issued_to
+
+
