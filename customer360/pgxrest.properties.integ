@@ -1,2 +1,2 @@
-pgxurl=http://localhost:7008
+pgxurl=http://localhost:7007777777
 pgxjson=./data/graph.pgx.json
